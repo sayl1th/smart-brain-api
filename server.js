@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt')
 const cors = require('cors')
 const knex = require('knex')
 const { handleRegister } = require('./Controllers/register.js')
-const { handleSignin } = require('./Controllers/signin')
-const { handleImage } = require('./Controllers/image.js')
+const { handleSignin } = require('./Controllers/signin.js')
+const { handleImage, handleApiCall } = require('./Controllers/image.js')
 
 const db = knex({
   client: 'pg',
@@ -25,14 +25,13 @@ app.get('/', async (req, res) => {
     const users = await db.select('*').from('users')
     res.json(users)
   } catch {
-    res.status('400').json('asda')
+    res.status('400')
   }
 })
 
 app.post('/signin', handleSignin(bcrypt, db))
-
 app.post('/register', handleRegister(bcrypt, db))
-
-app.put('/image', handleImage)
+app.put('/image', handleImage(db))
+app.post('/imageurl', handleApiCall())
 
 app.listen(3000)

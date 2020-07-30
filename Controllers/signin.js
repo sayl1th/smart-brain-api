@@ -1,6 +1,10 @@
 const handleSignin = (bcrypt, db) => async (req, res) => {
   const { email, password } = req.body
 
+  if (!email || !password) {
+    return res.status('400').json('incorrect form')
+  }
+
   try {
     const data = await db
       .select('email', 'hash')
